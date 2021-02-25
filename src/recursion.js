@@ -6,32 +6,203 @@
 // denoted by n!, is the product of all positive integers less than or equal to n.
 // Example: 5! = 5 x 4 x 3 x 2 x 1 = 120
 // factorial(5); // 120
-var factorial = function(n) {
+// in: a number, n
+// out: that number multiplied by itself - 1 over and over until 1.
+// assume that only numbers are put in it.
+// edge: if a neg number, return null so it doesn't go infintely backwards
+var factorial = function(n) { // ex: 3, now 2
+  //edge case
+  if (n < 0) { // skip
+    return null;
+  }
+  //base case
+  if (n === 0) { // skip
+    return 1;
+  }
+  //recursive case
+  // true - 3, true - 2
+  return n * factorial(n-1); // 3 * fact(3-1), 2 * fact (2-1)......
+
 };
 
 // 2. Compute the sum of an array of integers.
 // sum([1,2,3,4,5,6]); // 21
-var sum = function(array) {
+// in: an array of integers
+// out: sum these integers w/o for loop
+// assume: only integers - but can be negative OR positive
+// assume: don't modify original input arr
+// edge: empty array - return 0
+
+var sum = function(array) { // ex. [1, 2, 3]
+  var copy = array.slice(); // copy = [1, 2, 3]
+  // console.log('copy =', copy);
+  //edge
+  if (copy.length === 0) { //no - skip
+    return 0
+  }
+  //base case
+  if (copy.length === 1) { // no - skip
+    return copy.shift();
+  }
+  //defacto else since those are only options...
+  // as long as array has length more than 1...
+  //recursively
+  var first = copy.shift();
+  // console.log('first==', first);
+  return first + sum(copy);
+
+
 };
 
 // 3. Sum all numbers in an array containing nested arrays.
 // arraySum([1,[2,3],[[4]],5]); // 15
-var arraySum = function(array) {
+
+// in: nested arr of integers
+// out: sum of the inner portions of each nested arr
+// assume: only array of numbers
+// assume: it CAN be neg or pos nums
+// edge: empty arr  - 0
+
+var arraySum = function(input) {
+  var tot = 0;
+  // console.log(input);
+  if (typeof input === 'number') { //base
+    tot += input;
+  } else { // recursive
+    for (var x = 0; x < input.length; x++) {
+      // arraySum(input[x]);
+      tot += arraySum(input[x]);
+    }
+  }
+  return tot;
 };
 
+
+
+// var copy = array.slice(); // copy = [2, 3]
+// var first = copy.shift() // first = 2
+
+// console.log('first ==', first); // first == 2
+// console.log('copy ==', copy); // copy is now = [3]
+
+
+// // if it is NOT an array & therefore a number --->
+// if (!Array.isArray(first)) { //true - enter
+//   //edge - base
+//   if (copy.length === 0) { //
+//     return 0;
+//   }
+//   //recursive case
+//   return first + arraySum(copy); //
+// }
+// // TRACKING EC's
+// // EC 1 - first = 1, copy = [[2,3],[[4]],5]
+// // EC 2 - first = [2, 3], copy = [ [[4]], 5 ]
+// // EC 3 - first = 2, copy = [3]
+
+
+// // if it IS Array ---->
+// if (Array.isArray(first)) { // true - enter this operation
+//   // edge-base
+//   if (copy.length === 0) { //no - skip
+//     return 0;
+//   }
+//   //recursive case
+//   return arraySum(first); //kick this back up to top.
+
 // 4. Check if a number is even.
+// in: a number
+// out: a boolean of either true if num is even, false if num is odd
+// assume: only integers, including NEG & POS numbers
+// assume: only whole numbers
+// plan: use absolute value
+//    then subtract from it each time 2
 var isEven = function(n) {
+  var absNum = Math.abs(n);
+  //base case
+  if (absNum === 0) { // if number is zero, its even
+    return true;
+  } else if (absNum === 1) { // if num is 1, its false
+    return false;
+  }
+
+  //recursive case
+  if (absNum > 1) {
+    return isEven(absNum - 2);
+    //keep subtracting by 2 until we hit either 1 or 0.
+  }
+
 };
 
 // 5. Sum all integers below a given integer.
 // sumBelow(10); // 45
 // sumBelow(7); // 21
-var sumBelow = function(n) {
+// in: a number -- assume a whole number
+// out: a number - the sum of all except the farthest from 0
+// assume: can be either POS or NEG integers
+
+var sumBelow = function(n) { //5
+  //base case
+  if (n === 0) { // if we have hit zero we don't need to sum anymore
+     return 0;
+  }
+
+  // recursive negative case
+  if (n < 0) { // nope, skip
+    var oneMore = (n + 1); //
+    // var absNeg = Math.abs(oneMore); //for negs use abs Val
+    return oneMore + sumBelow(oneMore);
+
+  // recursive positive case
+  } else if (n > 0) {
+    var oneLess = (n - 1); //4
+    return oneLess + sumBelow(oneLess);
+  }
+
 };
 
 // 6. Get the integers within a range (x, y).
 // range(2,9); // [3,4,5,6,7,8]
-var range = function(x, y) {
+// in: 2 - numbers = non-inclusive endpoints to create a range
+// out: array - with above range in order
+// edge can be ascending or descending
+// edge: x & y can be pos or neg
+
+//EC1
+// x = 2, y = 3
+//[2, 3, 4, 5]
+
+//EC2
+// x = 3, y = 5
+
+
+var range = function(x, y) {  // x = 2, y = 5 //[2, 3, 4, 5]
+  var result = []; // [4, 5]
+  // base case
+  if ( (x === y) || (x-1 === y) || (x === y-1) ) {
+    return result;
+  }
+  // console.log(' x ===>', x);
+  // console.log(' y ===>', y);
+
+  // recursive case (x < y)
+  if (x < y) {
+    var oneMore = (x + 1); //4
+    // console.log('oneMore:', oneMore);
+    result.push(oneMore); // result = [4]
+    // console.log('result==', result);
+    return result.concat(range(oneMore, y)); // 4, 5
+
+  } else if (x > y) {
+    var oneLess = (x-1);
+    result.push(oneLess);
+    console.log('result==', result);
+    return result.concat(range(oneLess, y));
+  }
+
+
+  // desired result == [3, 4]
+
 };
 
 // 7. Compute the exponent of a number.
